@@ -35,25 +35,31 @@ class Creator:
     def redefineDatabase(self):
         #mycursor.execute("DROP TABLE service")
         mycursor.execute("DROP TABLE IF EXISTS service")
-        mycursor.execute("CREATE TABLE service(name VARCHAR(255),mobile VARCHAR(20),area VARCHAR(255),mode VARCHAR(2),pincode VARCHAR(225))")
+        mycursor.execute("CREATE TABLE service(name VARCHAR(255),mobile VARCHAR(20),area VARCHAR(255),mode VARCHAR(2),pincode VARCHAR(225),PRIMARY KEY (mobile))")
         mydb.commit()
     def creatorShowStatus(self):
         showStatus()
+
     def add(self):
-        name=input("Enter driver name:").upper()
-        while True:
-            mobile = input("Enter 10 digit mobile number:")
-            if len(mobile) != 10:
-                print("Re-Enter Mobile number")
-            else:
-                break
-        area=input("Enter the area:").upper()
-        mode="1"
-        pincode = input("Enter the pincode:")
-        sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
-        val=(name,mobile,area,mode,pincode)
-        mycursor.execute(sql,val)
-        mydb.commit()
+        try:
+            name=input("Enter driver name:").upper()
+            while True:
+                mobile = input("Enter 10 digit mobile number:")
+                if len(mobile) != 10:
+                    print("Re-Enter Mobile number")
+                else:
+                    break
+            area=input("Enter the area:").upper()
+            mode="1"
+            pincode = input("Enter the pincode:")
+            sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
+            val=(name,mobile,area,mode,pincode)
+            mycursor.execute(sql,val)
+            mydb.commit()
+        except Exception:
+            print("You are already registered or some internal issue occurs")
+            print("Contact admin")
+
     def offline(self):
         mobile = input("Enter 10 digit mobile number of the Driver:")
         while True:
@@ -64,6 +70,7 @@ class Creator:
         sql="DELETE FROM service WHERE mobile= " + "'"+ mobile + "'"
         mycursor.execute(sql)
         mydb.commit()
+
     def tempBreak(self):
         mobile = input("Enter 10 digit mobile number of the Driver:")
         while True:
@@ -74,6 +81,7 @@ class Creator:
         sql="UPDATE service SET mode=" + "'" + str(0) +"'" + "WHERE mobile="+ "'" + mobile + "';"
         mycursor.execute(sql)
         mydb.commit()
+
     def afterBreak(self):
         mobile = input("Enter 10 digit mobile number of the Driver:")
         while True:
@@ -91,6 +99,26 @@ class Creator:
         for i in result:
             print(i)
         mydb.commit()
+
+    def findDriver(self):
+        mobile = input("Enter 10 digit mobile number of the Driver:")
+        while True:
+            if len(mobile) != 10:
+                print("Re-Enter Mobile number")
+            else:
+                break
+        try:
+            sql = "SELECT * FROM service WHERE mobile='" + mobile + "';"
+            mycursor.execute(sql)
+            result = mycursor.fetchall()
+            if len(result) == 0:
+                print("No data found")
+            else:
+                for i in result:
+                    print(i)
+        except Exception:
+            pass
+
     def control(self):
         while True:
             print("0 for exit")
@@ -100,11 +128,12 @@ class Creator:
             print("5 for delete particular driver")
             print("6 for temporary break")
             print("7 for after returning from break")
+            print("8 to find drivers")
             ch=int(input("Enter the choice:"))
             if ch==0:
                 break
             if ch==1:
-                self.showFullDatabase()
+                self.redefineDatabase()
             elif ch==2:
                 self.showFullDatabase()
             elif ch==3:
@@ -115,6 +144,8 @@ class Creator:
                 self.tempBreak()
             elif ch==7:
                 self.afterBreak()
+            elif ch==8:
+                self.findDriver()
             else:
                 print("You have entered wrong choice")
 
@@ -160,20 +191,24 @@ class User:
             print("Wrong choice")
 class Driver:
     def add(self):
-        name=input("Enter Your name:").upper()
-        while True:
-            mobile = input("Enter 10 digit mobile number:")
-            if len(mobile) != 10:
-                print("Re-Enter Mobile number")
-            else:
-                break
-        area=input("Enter the area:").upper()
-        mode="1"
-        pincode = input("Enter the pincode:")
-        sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
-        val=(name,mobile,area,mode,pincode)
-        mycursor.execute(sql,val)
-        mydb.commit()
+        try:
+            name=input("Enter your name:").upper()
+            while True:
+                mobile = input("Enter 10 digit mobile number:")
+                if len(mobile) != 10:
+                    print("Re-Enter Mobile number")
+                else:
+                    break
+            area=input("Enter the area:").upper()
+            mode="1"
+            pincode = input("Enter the pincode:")
+            sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
+            val=(name,mobile,area,mode,pincode)
+            mycursor.execute(sql,val)
+            mydb.commit()
+        except Exception:
+            print("You are already registered or some internal issue occurs")
+            print("Contact admin")
     def offline(self):
         mobile = input("Enter 10 digit mobile number:")
         while True:
