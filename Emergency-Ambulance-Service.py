@@ -4,7 +4,6 @@ import mysql.connector
 Author : Arghya Dey
 Date 07-03-2022
 Place Kolkata
-
 UserName :- Scott
 Password :- Tiger
 """
@@ -68,6 +67,7 @@ class User:
             print("you can check by Pincode also")
 
     def control(self):
+        print("*****Welcome User******")
         print("1 for available Ambulance of database")
         print("2 for check Location and pin wise Ambulance")
         print("3 for pincode wise ambulance")
@@ -113,6 +113,7 @@ class Driver:
         mydb.commit()
     def driverShowStatus(self):
         showStatus()
+
     def makeOffline(self):
         mobile = input("Enter 10 digit mobile number of the Driver:")
         while True:
@@ -123,6 +124,7 @@ class Driver:
         sql="UPDATE service SET mode=" + "'" + str(0) + "'"  + "WHERE mobile="+ "'" + mobile + "';"
         mycursor.execute(sql)
         mydb.commit()
+
     def makeOnline(self):
         mobile = input("Enter 10 digit mobile number of the Driver:")
         while True:
@@ -163,6 +165,7 @@ class Driver:
             print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
 
     def control(self):
+        print("*****Welcome Driver******")
         print("1 for Sign-up in database")
         print("2 delete your record permanently")
         print("3 for showing available drivers in database")
@@ -265,7 +268,15 @@ class Creator(Driver,User):
         mycursor.execute(sql, val)
         mydb.commit()
 
-    def checkPassword(self,mobile,password):
+    def checkPassword(self,mobile=None,password=None):
+        if mobile==None or password==None:
+            mobile = input("Enter 10 digit mobile number of the Admin:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
+            password = input("Enter your password:")
         sql = "SELECT * FROM admin WHERE mobile = '" + mobile + "' AND password='" + password + "'"
         mycursor.execute(sql)
         result = mycursor.fetchall()
@@ -300,7 +311,35 @@ class Creator(Driver,User):
         sql = "DELETE FROM admin WHERE mobile='" + mobile + "' AND password='" + password + "'"
         mycursor.execute(sql)
         mydb.commit()
-
+    def changeAdminStatusToActive(self,mobile=None,password=None):
+        if mobile==None or password==None:
+            mobile = input("Enter 10 digit mobile number of the Admin:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
+            password = input("Enter your password:")
+        sql="UPDATE admin SET mode='1' WHERE mobile='" + mobile + "'"
+        mycursor.execute(sql)
+        mydb.commit()
+    def changeAdminStatusToInactive(self,mobile=None,password=None):
+        if mobile==None or password==None:
+            mobile = input("Enter 10 digit mobile number of the Admin:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
+            password = input("Enter your password:")
+        sql="UPDATE admin SET mode='0' WHERE mobile='" + mobile + "'"
+        mycursor.execute(sql)
+        mydb.commit()
+    def showActiveAdminTable(self):
+        mycursor.execute("SELECT * FROM admin WHERE mode='1'")
+        result = mycursor.fetchall()
+        for i in result:
+            print(i)    
     def showAdminTable(self):
         mycursor.execute("SELECT * FROM admin")
         result = mycursor.fetchall()
@@ -319,6 +358,8 @@ class Creator(Driver,User):
             print("8 for insert a person into admin table")
             print("9 for change admin password")
             print("10 for delete admin")
+            print("11 for showing admin table")
+            print("12 for showing active admin table")
             ch=int(input("Enter the choice:"))
             if ch==0:
                 break
@@ -339,10 +380,13 @@ class Creator(Driver,User):
             elif ch==8:
                 self.insertIntoAdminTable()
             elif ch==9:
-                self.checkPassword()
+                self.updateAdminPassword()
             elif ch==10:
                 self.deleteAdmin()
-                break
+            elif ch==11:
+                self.showAdminTable()
+            elif ch==12:
+                self.showActiveAdminTable()
             else:
                 print("You have entered wrong choice")
 
@@ -364,7 +408,9 @@ def main():
         if obj1.checkPassword(mobile,password) is True:
             print("Welcome Admin")
             obj = Creator()
+            obj.changeAdminStatusToActive(mobile,password)
             obj.control()
+            obj.changeAdminStatusToInactive(mobile,password)
             sys.exit(0)
     elif ch == 2:
         obj= User()
