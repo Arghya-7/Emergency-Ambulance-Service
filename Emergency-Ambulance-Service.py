@@ -67,19 +67,25 @@ class User:
             print("you can check by Pincode also")
 
     def control(self):
-        print("*****Welcome User******")
-        print("1 for available Ambulance of database")
-        print("2 for check Location and pin wise Ambulance")
-        print("3 for pincode wise ambulance")
-        ch=int(input("Enter your choice:"))
-        if ch==1:
-            self.usershowStatus()
-        elif ch==2:
-            self.seeLocationWise()
-        elif ch==3:
-            self.seePincodeWise()
-        else:
-            print("Wrong choice")
+        try:
+            print("*****Welcome User******")
+            print("1 for available Ambulance of database")
+            print("2 for check Location and pin wise Ambulance")
+            print("3 for pincode wise ambulance")
+            ch=int(input("Enter your choice:"))
+            if ch==1:
+                self.usershowStatus()
+            elif ch==2:
+                self.seeLocationWise()
+            elif ch==3:
+                self.seePincodeWise()
+            else:
+                print("Wrong choice")
+        except Exception:
+            print("Follow the instructions")
+            if type(self)==User:
+                self.control()
+
 
 class Driver:
     def add(self):
@@ -92,7 +98,7 @@ class Driver:
                 else:
                     break
             area=input("Enter the area:").upper()
-            mode="1"
+            mode="0"
             pincode = input("Enter the pincode:")
             sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
             val=(name,mobile,area,mode,pincode)
@@ -132,17 +138,19 @@ class Driver:
                 mobile = input("Re-enter mobile number:")
             else:
                 break
+        self.changeLocation(mobile)
         sql="UPDATE service SET mode=" + "'" + str(1) +"'" + "WHERE mobile="+ "'" + mobile + "'"
         mycursor.execute(sql)
         mydb.commit()
 
-    def changeLocation(self):
-        mobile = input("Enter 10 digit mobile number of the Driver:")
-        while True:
-            if len(mobile) != 10:
-                mobile = input("Re-enter mobile number:")
-            else:
-                break
+    def changeLocation(self,mobile=None):
+        if mobile==None:
+            mobile = input("Enter 10 digit mobile number of the Driver:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
         place = input("Enter the location:").upper()
         pincode = input("Enter the pin:")
         sql = "UPDATE service SET area='" + place + "', pincode='" + pincode + "'" + " WHERE mobile=" + "'" + mobile + "'"
@@ -165,29 +173,36 @@ class Driver:
             print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
 
     def control(self):
-        print("*****Welcome Driver******")
-        print("1 for Sign-up in database")
-        print("2 delete your record permanently")
-        print("3 for showing available drivers in database")
-        print("4 for going offline")
-        print("5 for going online")
-        print("6 for change location")
-        print("7 for checking personal details")
-        ch=int(input("Enter the choice:"))
-        if ch == 1:
-            self.add()
-        elif ch==2:
-            self.deleteRecord()
-        elif ch==3:
-            self.driverShowStatus()
-        elif ch==4:
-            self.makeOffline()
-        elif ch==5:
-            self.makeOnline()
-        elif ch==6:
-            self.changeLocation()
-        elif ch==7:
-            self.selfVisualization()
+        try:
+            print("*****Welcome Driver******")
+            print("1 for Sign-up in database")
+            print("2 delete your record permanently")
+            print("3 for showing available drivers in database")
+            print("4 for going offline")
+            print("5 for going online")
+            print("6 for change location")
+            print("7 for checking personal details")
+            ch=int(input("Enter the choice:"))
+            if ch == 1:
+                self.add()
+            elif ch==2:
+                self.deleteRecord()
+            elif ch==3:
+                self.driverShowStatus()
+            elif ch==4:
+                self.makeOffline()
+            elif ch==5:
+                self.makeOnline()
+            elif ch==6:
+                self.changeLocation()
+            elif ch==7:
+                self.selfVisualization()
+            else:
+                print("Wrong choice")
+        except Exception:
+            print("Follow the instructions")
+            if type(self)==Driver:
+                self.control()
 class Creator(Driver,User):
     def redefineDatabase(self):
         #mycursor.execute("DROP TABLE service")
@@ -207,7 +222,7 @@ class Creator(Driver,User):
                 else:
                     break
             area=input("Enter the area:").upper()
-            mode="1"
+            mode="0"
             pincode = input("Enter the pincode:")
             sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
             val=(name,mobile,area,mode,pincode)
@@ -339,56 +354,61 @@ class Creator(Driver,User):
         mycursor.execute("SELECT * FROM admin WHERE mode='1'")
         result = mycursor.fetchall()
         for i in result:
-            print(i)    
+            print(i)
     def showAdminTable(self):
         mycursor.execute("SELECT * FROM admin")
         result = mycursor.fetchall()
         for i in result:
             print(i)
     def control(self):
-        while True:
-            print("0 for exit")
-            print("1 for Redefine Database")
-            print("2 for seeing Full Database")
-            print("3 for making  sign-in a driver")
-            print("4 for delete particular driver records")
-            print("5 to find a driver")
-            print("6 for getting Driver-Class-Control")
-            print("7 for getting User-Class-Control")
-            print("8 for insert a person into admin table")
-            print("9 for change admin password")
-            print("10 for delete admin")
-            print("11 for showing admin table")
-            print("12 for showing active admin table")
-            ch=int(input("Enter the choice:"))
-            if ch==0:
-                break
-            if ch==1:
-                self.redefineDatabase()
-            elif ch==2:
-                self.showFullDatabase()
-            elif ch==3:
-                self.add()
-            elif ch==4:
-                self.delete()
-            elif ch==5:
-                self.findDriver()
-            elif ch==6:
-                Driver.control(self)
-            elif ch==7:
-                User.control(self)
-            elif ch==8:
-                self.insertIntoAdminTable()
-            elif ch==9:
-                self.updateAdminPassword()
-            elif ch==10:
-                self.deleteAdmin()
-            elif ch==11:
-                self.showAdminTable()
-            elif ch==12:
-                self.showActiveAdminTable()
-            else:
-                print("You have entered wrong choice")
+        try:
+            while True:
+                print("0 for exit")
+                print("1 for Redefine Database")
+                print("2 for seeing Full Database")
+                print("3 for making  sign-in a driver")
+                print("4 for delete particular driver records")
+                print("5 to find a driver")
+                print("6 for getting Driver-Class-Control")
+                print("7 for getting User-Class-Control")
+                print("8 for insert a person into admin table")
+                print("9 for change admin password")
+                print("10 for delete admin")
+                print("11 for showing admin table")
+                print("12 for showing active admin table")
+                ch=int(input("Enter the choice:"))
+                if ch==0:
+                    break
+                if ch==1:
+                    self.redefineDatabase()
+                elif ch==2:
+                    self.showFullDatabase()
+                elif ch==3:
+                    self.add()
+                elif ch==4:
+                    self.delete()
+                elif ch==5:
+                    self.findDriver()
+                elif ch==6:
+                    Driver.control(self)
+                elif ch==7:
+                    User.control(self)
+                elif ch==8:
+                    self.insertIntoAdminTable()
+                elif ch==9:
+                    self.updateAdminPassword()
+                elif ch==10:
+                    self.deleteAdmin()
+                elif ch==11:
+                    self.showAdminTable()
+                elif ch==12:
+                    self.showActiveAdminTable()
+                else:
+                    print("You have entered wrong choice")
+        except Exception:
+            print("Follow the instructions")
+            if type(self)==Creator:
+                self.control()
 
 
 def main():
