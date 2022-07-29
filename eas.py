@@ -1,5 +1,6 @@
 import sys
 import mysql.connector
+from tkinter import *
 """
 Author : Arghya Dey
 Date 07-03-2022
@@ -7,8 +8,8 @@ Place Kolkata
 UserName :- Scott
 Password :- Tiger
 """
-adminName = "Scott"
-adminPassword = "Tiger"
+# adminName = "Scott"
+# adminPassword = "Tiger"
 
 myHostDB="bnah2p0nvl3py94qhvvb-mysql.services.clever-cloud.com"
 myUserDB="ua8ni9sphlltiyep"
@@ -22,9 +23,13 @@ mycursor=mydb.cursor()
 def showStatus():
     mycursor.execute("SELECT name,mobile,area,pincode  FROM service WHERE mode =" + "'" + str(1)+"'")
     result = mycursor.fetchall()
-    print(f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}")
+    userResultWindow = Tk()
+    textLabel = f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}"
+    textBar = Label(userResultWindow, text=textLabel, fg="Red").pack()
     for i in result:
-        print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
+        temp = f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}"
+        resultOutput = Label(userResultWindow, text=temp).pack()
+    userResultWindow.mainloop()
     mydb.commit()
 
 #Service table
@@ -34,33 +39,62 @@ def showStatus():
 #mycursor.execute("CREATE TABLE admin(mobile VARCHAR(20),password VARCHAR(20),PRIMARY KEY (mobile))")
 
 class User:
+    def __init__(self,place=None,pin=None):
+        if place!=None:
+            place=str(place).upper()
+            self.place=place
+        else:
+            self.place=None
+        if pin!=None:
+            self.pin=str(pin)
+        else:
+            self.pin=None
     def usershowStatus(self):
         showStatus()
 
     def seeLocationWise(self):
-        place = input("Enter the location name:").upper()
-        pin = input("Enter the pincode without space:")
+        if self.place==None and self.pin==None:
+            self.place = input("Enter the location name:").upper()
+            self.pin = input("Enter the pincode without space:")
         try:
-            sql = "SELECT name,mobile,area,pincode FROM service WHERE mode='1' AND area=" + "'" + place + "'" + " AND " "pincode=" + "'" + pin + "'"
+            sql = "SELECT name,mobile,area,pincode FROM service WHERE mode='1' AND area=" + "'" + self.place + "'" + " AND " "pincode=" + "'" + self.pin + "'"
             mycursor.execute(sql)
             result = mycursor.fetchall()
-            print(f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}")
+            userResultWindow = Tk()
+            textLabel=f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}"
+            textBar=Label(userResultWindow,text=textLabel,fg="Red").pack()
             for i in result:
-                print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
+                temp=f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}"
+                resultOutput = Label(userResultWindow, text=temp).pack()
+            userResultWindow.mainloop()
+
+
+            # for i in result:
+            #     print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
             mydb.commit()
         except Exception:
             print("Sorry no ambulance there")
             print("you can check by Pincode also")
 
     def seePincodeWise(self):
-        pin = input("Enter the pincode without space:")
+        if self.pin==None:
+            self.pin = input("Enter the pincode without space:")
         try:
-            sql = "SELECT name,mobile,area,pincode FROM service WHERE mode='1' AND pincode=" + "'" + pin + "'"
+            sql = "SELECT name,mobile,area,pincode FROM service WHERE mode='1' AND pincode=" + "'" + self.pin + "'"
             mycursor.execute(sql)
             result = mycursor.fetchall()
-            print(f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}")
+            userResultWindow = Tk()
+            textLabel=f"{'Name':<12}{'Phone Number':>12}{'Area':>12}{'Pincode':>12}"
+            textBar=Label(userResultWindow,text=textLabel,fg="Red").pack()
             for i in result:
-                print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
+                temp=f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}"
+                resultOutput = Label(userResultWindow, text=temp).pack()
+            userResultWindow.mainloop()
+
+
+            # for i in result:
+            #     print(f"{i[0]:<12}{i[1]:>12}{i[2]:>12}{i[3]:>12}")
+            mydb.commit()
             mydb.commit()
         except Exception:
             print("Sorry no ambulance there")
@@ -440,6 +474,6 @@ def main():
         obj.control()
     else:
         print("You entered wrong choice")
-if __name__== "__main__" :
-    main()
-mydb.commit()
+# if __name__== "__main__" :
+#     main()
+# mydb.commit()
