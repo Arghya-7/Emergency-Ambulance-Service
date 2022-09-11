@@ -53,7 +53,7 @@ class User:
         showStatus()
 
     def seeLocationWise(self):
-        if self.place==None and self.pin==None:
+        if self.place==None or self.pin==None:
             self.place = input("Enter the location name:").upper()
             self.pin = input("Enter the pincode without space:")
         try:
@@ -122,6 +122,10 @@ class User:
 
 
 class Driver:
+    def __init__(self,pincode=None,location=None,mobile=None) -> None:
+        self.pincode=pincode
+        self.location=location
+        self.mobile=mobile
     def add(self):
         try:
             name=input("Enter your name:").upper()
@@ -155,38 +159,60 @@ class Driver:
         showStatus()
 
     def makeOffline(self):
-        mobile = input("Enter 10 digit mobile number of the Driver:")
-        while True:
-            if len(mobile) != 10:
-                mobile = input("Re-enter mobile number:")
-            else:
-                break
-        sql="UPDATE service SET mode=" + "'" + str(0) + "'"  + "WHERE mobile="+ "'" + mobile + "';"
-        mycursor.execute(sql)
-        mydb.commit()
-
-    def makeOnline(self):
-        mobile = input("Enter 10 digit mobile number of the Driver:")
-        while True:
-            if len(mobile) != 10:
-                mobile = input("Re-enter mobile number:")
-            else:
-                break
-        self.changeLocation(mobile)
-        sql="UPDATE service SET mode=" + "'" + str(1) +"'" + "WHERE mobile="+ "'" + mobile + "'"
-        mycursor.execute(sql)
-        mydb.commit()
-
-    def changeLocation(self,mobile=None):
-        if mobile==None:
+        if self.mobile==None:
             mobile = input("Enter 10 digit mobile number of the Driver:")
             while True:
                 if len(mobile) != 10:
                     mobile = input("Re-enter mobile number:")
                 else:
                     break
-        place = input("Enter the location:").upper()
-        pincode = input("Enter the pin:")
+            self.mobile=mobile
+        else:
+            mobile=self.mobile
+        sql="UPDATE service SET mode=" + "'" + str(0) + "'"  + "WHERE mobile="+ "'" + mobile + "';"
+        mycursor.execute(sql)
+        mydb.commit()
+
+    def makeOnline(self):
+        mobile=None
+        if self.mobile==None:
+            mobile = input("Enter 10 digit mobile number of the Driver:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
+        if self.mobile==None:
+            self.mobile=mobile
+        if mobile==None:
+            mobile=self.mobile
+        self.changeLocation(mobile)
+        sql="UPDATE service SET mode=" + "'" + str(1) +"'" + "WHERE mobile="+ "'" + mobile + "'"
+        mycursor.execute(sql)
+        mydb.commit()
+
+    def changeLocation(self,mobile=None,place=None,pincode=None):
+        if self.mobile==None:
+            mobile=self.mobile
+        elif mobile==None:
+            mobile = input("Enter 10 digit mobile number of the Driver:")
+            while True:
+                if len(mobile) != 10:
+                    mobile = input("Re-enter mobile number:")
+                else:
+                    break
+            self.mobile=mobile
+        if self.location!=None:
+            place = self.location.upper()
+        else:
+            place = input("Enter the location:").upper()
+            self.location=place
+
+        if self.pincode!=None:
+            pincode=self.pincode
+        else:
+            pincode = input("Enter the pin:")
+            self.pincode=pincode
         sql = "UPDATE service SET area='" + place + "', pincode='" + pincode + "'" + " WHERE mobile=" + "'" + mobile + "'"
         mycursor.execute(sql)
         mydb.commit()
@@ -361,7 +387,7 @@ class Creator(Driver,User):
         mycursor.execute(sql)
         mydb.commit()
     def changeAdminStatusToActive(self,mobile=None,password=None):
-        if mobile==None or password==None:
+        if mobile==None and password==None:
             mobile = input("Enter 10 digit mobile number of the Admin:")
             while True:
                 if len(mobile) != 10:
@@ -373,7 +399,7 @@ class Creator(Driver,User):
         mycursor.execute(sql)
         mydb.commit()
     def changeAdminStatusToInactive(self,mobile=None,password=None):
-        if mobile==None or password==None:
+        if mobile==None and password==None:
             mobile = input("Enter 10 digit mobile number of the Admin:")
             while True:
                 if len(mobile) != 10:
@@ -474,6 +500,6 @@ def main():
         obj.control()
     else:
         print("You entered wrong choice")
-# if __name__== "__main__" :
-#     main()
-# mydb.commit()
+if __name__== "__main__" :
+    main()
+mydb.commit()
