@@ -122,22 +122,40 @@ class User:
 
 
 class Driver:
-    def __init__(self,pincode=None,location=None,mobile=None) -> None:
+    def __init__(self,pincode=None,location=None,mobile=None,name=None) -> None:
+        self.name=name
         self.pincode=pincode
         self.location=location
         self.mobile=mobile
     def add(self):
         try:
-            name=input("Enter your name:").upper()
-            while True:
-                mobile = input("Enter 10 digit mobile number:")
-                if len(mobile) != 10:
-                    print("Oops!Your mobile number is not 10 digit")
-                else:
-                    break
-            area=input("Enter the area:").upper()
+            if self.name !=None:
+                name = self.name
+            else:
+                name=input("Enter your name:").upper()
+                self.name = name
+            if self.mobile!=None:
+                mobile=self.mobile
+            else:
+                while True:
+                    mobile = input("Enter 10 digit mobile number:")
+                    if len(mobile) != 10:
+                        print("Oops!Your mobile number is not 10 digit")
+                    else:
+                        break
+                self.mobile=mobile
+            if self.location != None:
+                area = self.location
+            else:
+                area=input("Enter the area:").upper()
+                self.location = area
             mode="0"
-            pincode = input("Enter the pincode:")
+            if self.pincode!=None:
+                pincode=self.pincode
+            else:
+                pincode = input("Enter the pincode:")
+                self.pincode=pincode
+            print(name,mobile,area,pincode)
             sql="INSERT INTO service(name ,mobile,area,mode,pincode) VALUES(%s,%s,%s,%s,%s);"
             val=(name,mobile,area,mode,pincode)
             mycursor.execute(sql,val)
