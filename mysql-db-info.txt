@@ -1,0 +1,4 @@
+myHostDB="bnah2p0nvl3py94qhvvb-mysql.services.clever-cloud.com"
+myUserDB="ua8ni9sphlltiyep"
+myPasswordDb="vBpxVGhvR0ucMxE9vgkZ"
+myDataBaseDb="bnah2p0nvl3py94qhvvb"
