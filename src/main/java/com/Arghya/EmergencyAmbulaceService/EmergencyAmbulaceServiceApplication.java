@@ -15,5 +15,4 @@ public class EmergencyAmbulaceServiceApplication {
 		SpringApplication.run(EmergencyAmbulaceServiceApplication.class, args);
 		logger.info("Application started successfully");
 	}
-
 }
