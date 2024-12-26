@@ -17,8 +17,11 @@ import com.Arghya.EmergencyAmbulaceService.service.DriverServices;
 //@ComponentScan ({"com.Arghya.EmergecyAmbulanceService.service.DriverServices", "com.Arghya.EmergecyAmbulanceService.service.UserServices"})
 public class DriverController 
 {
-	@Autowired
-	DriverServices driverServices;
+
+	private final DriverServices driverServices;
+	public DriverController(final DriverServices driverServices){
+		this.driverServices = driverServices;
+	}
 	
 	@GetMapping("/")
 	public String homePage()
