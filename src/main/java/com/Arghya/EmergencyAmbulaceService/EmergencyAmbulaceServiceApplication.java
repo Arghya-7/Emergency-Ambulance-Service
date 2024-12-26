@@ -16,3 +16,4 @@ public class EmergencyAmbulaceServiceApplication {
 		logger.info("Application started successfully");
 	}
 }
+
